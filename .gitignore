@@ -431,3 +431,6 @@ WorkFlow/
 scratch/
 *.tmp
 extracted_*.txt
+
+# Configuración local de base de datos y secretos
+config/config.php
