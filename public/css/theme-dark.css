@@ -1,0 +1,29 @@
+/* =============================================================================
+   FLOCK — Agenda Cultural Municipal
+   Hoja de Estilos Alternativa: Tema Accesible / Alto Contraste (theme-dark.css)
+   ============================================================================= */
+
+:root {
+    --color-bg-light: #121212;
+    --color-surface: #1e1e1e;
+    --color-text-main: #f8f9fa;
+    --color-text-muted: #adb5bd;
+    --color-border: #2d3748;
+}
+
+body {
+    background-color: #121212;
+    color: #f8f9fa;
+}
+
+.calendar-container,
+.event-card {
+    background-color: #1e1e1e;
+    border-color: #2d3748;
+}
+
+.calendar-day-cell {
+    background-color: #18181b;
+    border-color: #27272a;
+    color: #f8f9fa;
+}
