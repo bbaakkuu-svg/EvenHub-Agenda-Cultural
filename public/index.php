@@ -9,6 +9,7 @@ require_once __DIR__ . '/../config/config.php';
 $pageTitle = 'Agenda Cultural y Calendario de Eventos';
 $activeNav = 'home';
 
+
 require_once __DIR__ . '/../views/layout/header.php';
 ?>
 

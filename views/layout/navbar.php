@@ -20,19 +20,13 @@
                         <a class="nav-link <?= (!isset($activeNav) || $activeNav === 'home') ? 'active' : '' ?>" href="index.php">Agenda y Calendario</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link <?= (isset($activeNav) && $activeNav === 'espacios') ? 'active' : '' ?>" href="index.php#espacios">Espacios Culturales</a>
+                        <a class="nav-link <?= (isset($activeNav) && $activeNav === 'eventos') ? 'active' : '' ?>" href="eventos.php">Eventos</a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="categoriasDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Categorías
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="categoriasDropdown">
-                            <li><a class="dropdown-item" href="index.php?categoria=festivales">Festivales y Encuentros</a></li>
-                            <li><a class="dropdown-item" href="index.php?categoria=cineforum">Cinefórum y Audiovisual</a></li>
-                            <li><a class="dropdown-item" href="index.php?categoria=musica-directo">Música en Directo</a></li>
-                            <li><a class="dropdown-item" href="index.php?categoria=arte-urbano">Arte Urbano y Exposiciones</a></li>
-                            <li><a class="dropdown-item" href="index.php?categoria=charlas-conferencias">Charlas y Conferencias</a></li>
-                        </ul>
+                    <li class="nav-item">
+                        <a class="nav-link <?= (isset($activeNav) && $activeNav === 'categorias') ? 'active' : '' ?>" href="categorias.php">Categorías</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link <?= (isset($activeNav) && $activeNav === 'espacios') ? 'active' : '' ?>" href="index.php#espacios">Espacios</a>
                     </li>
                     <li class="nav-item ms-lg-2">
                         <a class="btn btn-outline-light btn-sm px-3" href="login.php">
