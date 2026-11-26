@@ -73,7 +73,7 @@ declare(strict_types=1);
                     <?php endforeach; ?>
                     <li class="nav-item ms-lg-auto">
                         <a class="nav-link py-1 px-3 fs-sm text-primary fw-semibold rounded-pill" href="categorias.php">
-                            📂 Fichas de Categorías →
+                            Fichas de Categorías →
                         </a>
                     </li>
                 </ul>
@@ -151,7 +151,6 @@ declare(strict_types=1);
     <?php elseif (empty($eventos)): ?>
         <!-- Estado vacío: Sin resultados -->
         <div class="text-center py-5 bg-white rounded-4 border p-4 shadow-sm my-4">
-            <div class="display-6 mb-3">🔍</div>
             <h2 class="h5 fw-bold mb-2">
                 <?= $hayFiltros
                     ? 'No hemos encontrado eventos con esos criterios de búsqueda.'
@@ -220,9 +219,9 @@ declare(strict_types=1);
                             </p>
 
                             <div class="fs-xs text-secondary mb-3 d-flex flex-column gap-1">
-                                <span>📅 <strong><?= e(formatearFecha($ev['fecha'], $ev['hora'] ?? null)) ?></strong></span>
-                                <span>📍 <?= e($ev['lugar']) ?></span>
-                                <span>👥 <strong><?= $plazasLibres ?> plazas disponibles</strong> (de <?= $aforoTotal ?>)</span>
+                                <span> <strong><?= e(formatearFecha($ev['fecha'], $ev['hora'] ?? null)) ?></strong></span>
+                                <span> <?= e($ev['lugar']) ?></span>
+                                <span> <strong><?= $plazasLibres ?> plazas disponibles</strong> (de <?= $aforoTotal ?>)</span>
                             </div>
 
                             <a href="evento.php?id=<?= (int) $ev['id'] ?>" class="btn btn-flock-accent w-100 text-center">
