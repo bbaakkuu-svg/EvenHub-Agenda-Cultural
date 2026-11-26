@@ -22,19 +22,8 @@
                     <li class="nav-item">
                         <a class="nav-link <?= (isset($activeNav) && $activeNav === 'eventos') ? 'active' : '' ?>" href="eventos.php">Eventos</a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle <?= (isset($activeNav) && $activeNav === 'categorias') ? 'active' : '' ?>" href="categorias.php" id="categoriasDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Categorías
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="categoriasDropdown">
-                            <li><a class="dropdown-item fw-bold text-primary" href="categorias.php">📂 Ver todas las categorías</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="eventos.php?categoria=1">Festivales y Encuentros</a></li>
-                            <li><a class="dropdown-item" href="eventos.php?categoria=2">Cinefórum y Audiovisual</a></li>
-                            <li><a class="dropdown-item" href="eventos.php?categoria=3">Música en Directo</a></li>
-                            <li><a class="dropdown-item" href="eventos.php?categoria=4">Arte Urbano y Exposiciones</a></li>
-                            <li><a class="dropdown-item" href="eventos.php?categoria=5">Charlas y Conferencias</a></li>
-                        </ul>
+                    <li class="nav-item">
+                        <a class="nav-link <?= (isset($activeNav) && $activeNav === 'categorias') ? 'active' : '' ?>" href="categorias.php">Categorías</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link <?= (isset($activeNav) && $activeNav === 'espacios') ? 'active' : '' ?>" href="index.php#espacios">Espacios</a>

@@ -19,37 +19,84 @@ declare(strict_types=1);
 
 <div class="container my-4">
     <!-- Encabezado de sección -->
-    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
         <div>
             <h1 class="h3 fw-bold mb-1">Agenda Cultural</h1>
             <p class="text-muted mb-0">Explora la programación oficial del municipio e inscríbete para reservar plaza</p>
         </div>
-        <div class="d-flex gap-2">
-            <a href="categorias.php" class="btn btn-outline-primary btn-sm">
-                📂 Ver Categorías
-            </a>
+        <div>
             <a href="index.php" class="btn btn-outline-secondary btn-sm">
-                ← Inicio
+                ← Volver al Inicio
             </a>
         </div>
     </div>
+
+    <!-- Barra de Navegación de Categorías (Category Navbar) -->
+    <nav class="category-navbar navbar navbar-expand-lg bg-white shadow-sm rounded-3 p-2 mb-4 border" aria-label="Navegación por categorías culturales">
+        <div class="container-fluid px-1">
+            <span class="navbar-text fw-bold text-uppercase fs-xs text-muted me-3 d-none d-lg-inline">
+                Disciplinas:
+            </span>
+            <button class="navbar-toggler w-100 mb-2 d-lg-none border-0 py-1" type="button" data-bs-toggle="collapse" data-bs-target="#categoryNavItems" aria-controls="categoryNavItems" aria-expanded="false" aria-label="Alternar categorías">
+                <span class="d-flex justify-content-between align-items-center fs-sm text-dark fw-semibold">
+                    <span><?= $categoriaActiva !== null ? 'Categoría: ' . e($categoriaActiva['nombre']) : 'Filtrar por Disciplina' ?></span>
+                    <span class="navbar-toggler-icon"></span>
+                </span>
+            </button>
+            <div class="collapse navbar-collapse" id="categoryNavItems">
+                <ul class="nav nav-pills flex-wrap gap-1 align-items-center w-100">
+                    <li class="nav-item">
+                        <a class="nav-link py-1 px-3 fs-sm rounded-pill <?= ($categoriaSel === null) ? 'active bg-flock-primary text-white fw-semibold' : 'text-dark bg-light' ?>"
+                           href="eventos.php<?= ($q !== '') ? '?q=' . urlencode($q) : '' ?>">
+                            Todas
+                        </a>
+                    </li>
+                    <?php foreach ($categorias as $cat): ?>
+                        <?php
+                        $isCatSelected = ($categoriaSel !== null && (
+                            (string) $cat['id'] === (string) $categoriaSel ||
+                            (isset($cat['slug']) && $cat['slug'] === (string) $categoriaSel)
+                        ));
+                        $catUrl = 'eventos.php?categoria=' . urlencode((string) $cat['id']);
+                        if ($q !== '') {
+                            $catUrl .= '&q=' . urlencode($q);
+                        }
+                        $badgeBg = !empty($cat['color_badge']) ? $cat['color_badge'] : '#1d3557';
+                        ?>
+                        <li class="nav-item">
+                            <a class="nav-link py-1 px-3 fs-sm rounded-pill <?= $isCatSelected ? 'active text-white fw-bold shadow-sm' : 'text-dark bg-light' ?>"
+                               style="<?= $isCatSelected ? 'background-color: ' . e($badgeBg) . ' !important;' : '' ?>"
+                               href="<?= e($catUrl) ?>">
+                                <?= e($cat['nombre']) ?>
+                            </a>
+                        </li>
+                    <?php endforeach; ?>
+                    <li class="nav-item ms-lg-auto">
+                        <a class="nav-link py-1 px-3 fs-sm text-primary fw-semibold rounded-pill" href="categorias.php">
+                            📂 Fichas de Categorías →
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
     <!-- Indicador de categoría activa (si se filtra por una categoría) -->
     <?php if ($categoriaActiva !== null): ?>
         <div class="p-3 mb-4 rounded-3 bg-white border shadow-sm d-flex flex-wrap justify-content-between align-items-center gap-2"
              style="border-left: 5px solid <?= e($categoriaActiva['color_badge'] ?? '#1d3557') ?> !important;">
             <div class="d-flex align-items-center gap-2">
-                <span class="text-muted fs-sm">Filtrando por disciplina:</span>
-                <span class="badge px-3 py-2 text-white fw-bold" style="background-color: <?= e($categoriaActiva['color_badge'] ?? '#1d3557') ?>;">
+                <span class="text-muted fs-sm">Mostrando eventos de:</span>
+                <span class="badge px-3 py-2 text-white fw-bold fs-sm" style="background-color: <?= e($categoriaActiva['color_badge'] ?? '#1d3557') ?>;">
                     <?= e($categoriaActiva['nombre']) ?>
                 </span>
             </div>
             <div class="d-flex gap-2">
                 <a href="categorias.php" class="btn btn-sm btn-outline-secondary">
-                    Cambiar categoría
+                    Ver ficha descriptiva
                 </a>
-                <a href="eventos.php" class="btn btn-sm btn-outline-danger">
-                    ✕ Quitar filtro
+                <a href="eventos.php<?= ($q !== '') ? '?q=' . urlencode($q) : '' ?>" class="btn btn-sm btn-outline-danger">
+                    ✕ Ver todas las categorías
                 </a>
             </div>
         </div>
@@ -67,27 +114,24 @@ declare(strict_types=1);
         </div>
     <?php endif; ?>
 
-    <!-- Formulario de Búsqueda GET Tradicional -->
-    <div class="card p-3 p-md-4 mb-4 shadow-sm border-0 bg-white rounded-3">
-        <form method="get" action="eventos.php" class="row g-3 align-items-end">
+    <!-- Formulario de Búsqueda GET Tradicional por palabra clave -->
+    <div class="card p-3 mb-4 shadow-sm border-0 bg-white rounded-3">
+        <form method="get" action="eventos.php" class="row g-2 align-items-center">
             <?php if ($categoriaSel !== null): ?>
                 <input type="hidden" name="categoria" value="<?= e((string) $categoriaSel) ?>">
             <?php endif; ?>
 
-            <div class="col-12 col-md-7">
-                <label for="q" class="form-label fw-semibold fs-sm mb-1">Buscar por palabra clave</label>
+            <div class="col-12 col-md-9">
+                <label for="q" class="visually-hidden">Buscar</label>
                 <input type="search" id="q" name="q" class="form-control"
-                       placeholder="Buscar por título, temática, descripción o recinto..."
+                       placeholder="Buscar por título, temática, descripción o recinto municipal..."
                        maxlength="100" value="<?= e($q) ?>">
             </div>
 
-            <div class="col-12 col-md-5 d-flex gap-2">
+            <div class="col-12 col-md-3 d-flex gap-2">
                 <button type="submit" class="btn btn-flock-accent flex-fill">
                     Buscar
                 </button>
-                <a href="categorias.php" class="btn btn-outline-primary" title="Explorar disciplinas en una página dedicada">
-                    📂 Categorías
-                </a>
                 <?php if ($hayFiltros): ?>
                     <a href="eventos.php" class="btn btn-outline-secondary" title="Limpiar todos los filtros">
                         Limpiar
@@ -115,7 +159,7 @@ declare(strict_types=1);
             </h2>
             <p class="text-muted mb-4">
                 <?= $hayFiltros
-                    ? 'Prueba con otra palabra clave o explora otra categoría cultural.'
+                    ? 'Prueba con otra palabra clave o selecciona otra disciplina cultural en la barra superior.'
                     : 'Añadimos nuevas propuestas con frecuencia. Vuelve a consultar la agenda pronto.' ?>
             </p>
             <div class="d-flex justify-content-center gap-2">
@@ -125,7 +169,7 @@ declare(strict_types=1);
                     </a>
                 <?php endif; ?>
                 <a href="categorias.php" class="btn btn-outline-secondary">
-                    Explorar categorías
+                    Explorar fichas de categorías
                 </a>
             </div>
         </div>
@@ -137,7 +181,7 @@ declare(strict_types=1);
                 Se <?= count($eventos) === 1 ? 'ha encontrado' : 'han encontrado' ?>
                 <strong><?= count($eventos) ?></strong>
                 <?= count($eventos) === 1 ? 'evento cultural' : 'eventos culturales' ?>
-                <?= $hayFiltros ? 'para tu búsqueda' : 'en la programación activa' ?>.
+                <?= $hayFiltros ? 'para tu selección' : 'en la programación activa' ?>.
             </p>
         </div>
 
