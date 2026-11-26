@@ -2,6 +2,7 @@
 if (!defined('APP_NAME')) {
     define('APP_NAME', 'FLOCK — Agenda Cultural');
 }
+$basePath = $basePath ?? '';
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -15,10 +16,10 @@ if (!defined('APP_NAME')) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     
     <!-- Hoja de Estilos Propia (Identidad visual corporativa municipal) -->
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="<?= $basePath ?>css/styles.css">
     
     <!-- Hoja de Estilos Alternativa (Tema accesible / oscuro) -->
-    <link rel="stylesheet" href="css/theme-dark.css" id="theme-dark-stylesheet" disabled>
+    <link rel="stylesheet" href="<?= $basePath ?>css/theme-dark.css" id="theme-dark-stylesheet" disabled>
 </head>
 <body>
 <?php require_once __DIR__ . '/navbar.php'; ?>
