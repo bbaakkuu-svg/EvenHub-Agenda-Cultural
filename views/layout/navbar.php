@@ -20,19 +20,24 @@
                         <a class="nav-link <?= (!isset($activeNav) || $activeNav === 'home') ? 'active' : '' ?>" href="index.php">Agenda y Calendario</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link <?= (isset($activeNav) && $activeNav === 'espacios') ? 'active' : '' ?>" href="index.php#espacios">Espacios Culturales</a>
+                        <a class="nav-link <?= (isset($activeNav) && $activeNav === 'eventos') ? 'active' : '' ?>" href="eventos.php">Eventos</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="categoriasDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle <?= (isset($activeNav) && $activeNav === 'categorias') ? 'active' : '' ?>" href="categorias.php" id="categoriasDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Categorías
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="categoriasDropdown">
-                            <li><a class="dropdown-item" href="index.php?categoria=festivales">Festivales y Encuentros</a></li>
-                            <li><a class="dropdown-item" href="index.php?categoria=cineforum">Cinefórum y Audiovisual</a></li>
-                            <li><a class="dropdown-item" href="index.php?categoria=musica-directo">Música en Directo</a></li>
-                            <li><a class="dropdown-item" href="index.php?categoria=arte-urbano">Arte Urbano y Exposiciones</a></li>
-                            <li><a class="dropdown-item" href="index.php?categoria=charlas-conferencias">Charlas y Conferencias</a></li>
+                            <li><a class="dropdown-item fw-bold text-primary" href="categorias.php">📂 Ver todas las categorías</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="eventos.php?categoria=1">Festivales y Encuentros</a></li>
+                            <li><a class="dropdown-item" href="eventos.php?categoria=2">Cinefórum y Audiovisual</a></li>
+                            <li><a class="dropdown-item" href="eventos.php?categoria=3">Música en Directo</a></li>
+                            <li><a class="dropdown-item" href="eventos.php?categoria=4">Arte Urbano y Exposiciones</a></li>
+                            <li><a class="dropdown-item" href="eventos.php?categoria=5">Charlas y Conferencias</a></li>
                         </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link <?= (isset($activeNav) && $activeNav === 'espacios') ? 'active' : '' ?>" href="index.php#espacios">Espacios</a>
                     </li>
                     <li class="nav-item ms-lg-2">
                         <a class="btn btn-outline-light btn-sm px-3" href="login.php">
