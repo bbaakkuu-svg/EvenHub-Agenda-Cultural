@@ -49,23 +49,13 @@ declare(strict_types=1);
                 <?php
                 $colorBadge   = !empty($cat['color_badge']) ? (string) $cat['color_badge'] : '#1d3557';
                 $totalEventos = (int) ($cat['total_eventos'] ?? 0);
-                
-                // Iconos representativos para cada disciplina
-                $iconos = [
-                    'festivales'           => '🎪',
-                    'cineforum'            => '🎬',
-                    'musica-directo'       => '🎵',
-                    'arte-urbano'          => '🎨',
-                    'charlas-conferencias' => '💬',
-                ];
-                $icono = $iconos[$cat['slug'] ?? ''] ?? '🏛️';
                 ?>
                 <div class="col-12 col-md-6 col-lg-4">
                     <div class="card h-100 shadow-sm border-0 rounded-3 overflow-hidden bg-white d-flex flex-column"
-                         style="border-top: 5px solid <?= e($colorBadge) ?> !important;">
+                        style="border-top: 5px solid <?= e($colorBadge) ?> !important;">
                         <div class="card-body p-4 d-flex flex-column flex-grow-1">
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <span class="fs-2" aria-hidden="true"><?= $icono ?></span>
+                                <span class="fs-2" aria-hidden="true"></span>
                                 <span class="badge rounded-pill px-3 py-2 text-white" style="background-color: <?= e($colorBadge) ?>;">
                                     <?= $totalEventos ?> <?= $totalEventos === 1 ? 'evento' : 'eventos' ?>
                                 </span>

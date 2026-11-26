@@ -5,8 +5,8 @@ declare(strict_types=1);
  * FLOCK — Agenda Cultural Municipal
  * Controlador de Categorías Culturales (public/categorias.php)
  *
- * Muestra el catálogo de ejes temáticos y disciplinas culturales del municipio,
- * con el cómputo de actividades programadas en cada una.
+ * Muestra el catálogo de temáticas y disciplinas culturales del municipio,
+ * con el número de actividades programadas en cada una.
  */
 
 require_once __DIR__ . '/../includes/conexion.php';
@@ -18,7 +18,7 @@ $categorias = [];
 try {
     $pdo = obtenerConexion();
 
-    // Consulta las categorías junto con el número de eventos activos asignados
+    // Consulta las categorías junto con el número de eventos activos programados
     $sql = 'SELECT 
                 c.id, 
                 c.nombre, 
