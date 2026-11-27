@@ -87,3 +87,25 @@ function obtenerImagenEvento(?string $imagen, string $categoriaSlug = ''): strin
 
     return $fallbacks[$categoriaSlug] ?? 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=600&auto=format&fit=crop&q=80';
 }
+/**
+ * Emite cabecera HTTP 404 y muestra una pantalla amigable de no encontrado.
+ */
+function mostrar404(string $mensaje = 'El recurso solicitado no existe o no está disponible.'): void
+{
+    http_response_code(404);
+    $pageTitle = 'Página no encontrada';
+
+    require_once __DIR__ . '/../views/layout/header.php';
+    ?>
+    <div class="container my-5 text-center">
+        <div class="display-1 text-muted mb-3 fw-bold">404</div>
+        <h1 class="h3 fw-bold mb-2">Página o evento no encontrado</h1>
+        <p class="text-muted mb-4"><?= e($mensaje) ?></p>
+        <a href="eventos.php" class="btn btn-primary px-4">
+            ← Volver a la agenda cultural
+        </a>
+    </div>
+    <?php
+    require_once __DIR__ . '/../views/layout/footer.php';
+    exit;
+}
