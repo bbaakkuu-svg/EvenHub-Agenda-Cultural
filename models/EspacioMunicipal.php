@@ -2,10 +2,8 @@
 declare(strict_types=1);
 
 /**
- * Modelo EspacioMunicipal (models/EspacioMunicipal.php)
- * FLOCK — Agenda Cultural Municipal
- *
- * Encapsula la persistencia y consultas sobre la tabla 'espacios_municipales'.
+ * Modelo EspacioMunicipal
+ * Gestiona los recintos y sedes públicas en la tabla 'espacios_municipales'.
  */
 
 require_once __DIR__ . '/../includes/conexion.php';
@@ -13,24 +11,25 @@ require_once __DIR__ . '/../includes/conexion.php';
 class EspacioMunicipal
 {
     /**
-     * Cuenta el total de espacios municipales registrados.
+     * Devuelve el total de recintos municipales registrados.
      */
     public static function contarTodos(): int
     {
-        $pdo = obtenerConexion();
-        return (int) $pdo->query('SELECT COUNT(*) FROM espacios_municipales')->fetchColumn();
+        return (int) obtenerConexion()
+            ->query('SELECT COUNT(*) FROM espacios_municipales')
+            ->fetchColumn();
     }
 
     /**
-     * Obtiene todos los espacios municipales ordenados por nombre.
+     * Lista todos los espacios municipales ordenados por nombre.
      *
      * @return array<int, array<string, mixed>>
      */
     public static function todos(): array
     {
-        $pdo = obtenerConexion();
-        $stmt = $pdo->query('SELECT id, nombre, direccion, aforo_maximo, descripcion FROM espacios_municipales ORDER BY nombre ASC');
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return obtenerConexion()
+            ->query('SELECT id, nombre, direccion, aforo_maximo, descripcion FROM espacios_municipales ORDER BY nombre ASC')
+            ->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
@@ -41,8 +40,12 @@ class EspacioMunicipal
      */
     public static function buscarPorId(int $id): ?array
     {
-        $pdo = obtenerConexion();
-        $stmt = $pdo->prepare('SELECT id, nombre, direccion, aforo_maximo, descripcion FROM espacios_municipales WHERE id = :id LIMIT 1');
+        $stmt = obtenerConexion()->prepare(
+            'SELECT id, nombre, direccion, aforo_maximo, descripcion 
+             FROM espacios_municipales 
+             WHERE id = :id 
+             LIMIT 1'
+        );
         $stmt->execute([':id' => $id]);
         $espacio = $stmt->fetch(PDO::FETCH_ASSOC);
 
