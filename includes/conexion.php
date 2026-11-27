@@ -2,18 +2,12 @@
 declare(strict_types=1);
 
 /**
- * Conexión a la base de datos MySQL mediante PDO (Singleton).
- * FLOCK — Agenda Cultural Municipal
+ * Conexión Singleton a la base de datos MySQL mediante PDO.
+ * Proporciona acceso centralizado con excepciones activas, emulación desactivada y UTF-8.
  */
 
 require_once __DIR__ . '/../config/config.php';
 
-/**
- * Devuelve la instancia única de conexión PDO.
- *
- * @throws PDOException Si falla la conexión.
- * @return PDO
- */
 function obtenerConexion(): PDO
 {
     static $pdo = null;
@@ -34,7 +28,12 @@ function obtenerConexion(): PDO
             PDO::ATTR_EMULATE_PREPARES   => false,
         ];
 
-        $pdo = new PDO($dsn, $user, $pass, $opciones);
+        try {
+            $pdo = new PDO($dsn, $user, $pass, $opciones);
+        } catch (PDOException $e) {
+            error_log('Error de conexión PDO: ' . $e->getMessage());
+            throw new PDOException('No fue posible conectar con la base de datos municipal.');
+        }
     }
 
     return $pdo;

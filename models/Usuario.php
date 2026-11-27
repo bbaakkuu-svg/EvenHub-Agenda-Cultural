@@ -2,10 +2,8 @@
 declare(strict_types=1);
 
 /**
- * Modelo Usuario (models/Usuario.php)
- * FLOCK — Agenda Cultural Municipal
- *
- * Encapsula la persistencia y operaciones sobre la tabla 'usuarios'.
+ * Modelo Usuario
+ * Gestiona la autenticación y permisos de usuarios en la tabla 'usuarios'.
  */
 
 require_once __DIR__ . '/../includes/conexion.php';
@@ -13,15 +11,14 @@ require_once __DIR__ . '/../includes/conexion.php';
 class Usuario
 {
     /**
-     * Busca un usuario por su nombre de usuario único.
+     * Busca un usuario por su nombre de usuario.
      *
      * @param string $username
      * @return array<string, mixed>|null
      */
     public static function buscarPorUsername(string $username): ?array
     {
-        $pdo = obtenerConexion();
-        $stmt = $pdo->prepare(
+        $stmt = obtenerConexion()->prepare(
             'SELECT id, username, password_hash, nombre_completo, email, rol, created_at
              FROM usuarios
              WHERE username = :username
@@ -41,8 +38,7 @@ class Usuario
      */
     public static function buscarPorId(int $id): ?array
     {
-        $pdo = obtenerConexion();
-        $stmt = $pdo->prepare(
+        $stmt = obtenerConexion()->prepare(
             'SELECT id, username, nombre_completo, email, rol, created_at
              FROM usuarios
              WHERE id = :id
@@ -55,11 +51,11 @@ class Usuario
     }
 
     /**
-     * Verifica las credenciales de un usuario contra la base de datos.
+     * Verifica credenciales contra la base de datos.
      *
      * @param string $username
      * @param string $password
-     * @return array<string, mixed>|null Devuelve el usuario (sin hash) o null si falla
+     * @return array<string, mixed>|null Datos del usuario sin hash de contraseña
      */
     public static function autenticar(string $username, string $password): ?array
     {

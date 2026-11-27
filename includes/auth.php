@@ -3,58 +3,47 @@ declare(strict_types=1);
 
 /**
  * Módulo de Autenticación y Control de Sesiones.
- * FLOCK — Agenda Cultural Municipal
- *
- * Implementa el manejo de sesiones seguras, autenticación contra el modelo Usuario,
- * mitigación de Session Fixation (session_regenerate_id), caducidad por inactividad
- * y guardián de rutas protegidas (RBAC: admin / gestor).
+ * Gestiona sesiones seguras (HttpOnly, SameSite, regeneración de ID), inactividad y RBAC.
  */
 
 require_once __DIR__ . '/../models/Usuario.php';
 
-const TIEMPO_INACTIVIDAD_SESION = 1800; // 30 minutos en segundos
+const TIEMPO_INACTIVIDAD_SESION = 1800; // 30 minutos
 
 /**
- * Inicia la sesión PHP con directivas de cookies seguras si aún no ha iniciado.
- * Aplica además el control de expiración por inactividad.
+ * Inicia la sesión PHP con directivas de cookies seguras y verifica inactividad.
  */
 function iniciarSesionSegura(): void
 {
-    if (session_status() === PHP_SESSION_NONE) {
-        if (!headers_sent()) {
-            // Directivas de seguridad para la cookie de sesión (HttpOnly, SameSite, Secure)
-            $esHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
-                || (isset($_SERVER['SERVER_PORT']) && (int) $_SERVER['SERVER_PORT'] === 443);
+    if (session_status() === PHP_SESSION_NONE && !headers_sent()) {
+        $esHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+            || (isset($_SERVER['SERVER_PORT']) && (int) $_SERVER['SERVER_PORT'] === 443);
 
-            session_set_cookie_params([
-                'lifetime' => 0,              // Cookie de sesión (se borra al cerrar el navegador)
-                'path' => '/',
-                'domain' => '',
-                'secure' => $esHttps,       // Solo por HTTPS si está disponible
-                'httponly' => true,           // Inaccesible desde JavaScript (mitiga robo de sesión por XSS)
-                'samesite' => 'Lax'           // Protección básica contra CSRF
-            ]);
-            session_start();
-        }
+        session_set_cookie_params([
+            'lifetime' => 0,
+            'path'     => '/',
+            'domain'   => '',
+            'secure'   => $esHttps,
+            'httponly' => true,
+            'samesite' => 'Lax'
+        ]);
+        session_start();
     }
 
-    // Comprobar expiración por inactividad si el usuario está autenticado
     if (!empty($_SESSION['usuario'])) {
         $ahora = time();
         if (isset($_SESSION['ultimo_acceso']) && ($ahora - (int) $_SESSION['ultimo_acceso'] > TIEMPO_INACTIVIDAD_SESION)) {
-            // Sesión caducada por inactividad
             cerrarSesion();
             iniciarSesionSegura();
             $_SESSION['flash_aviso'] = 'Su sesión ha expirado por inactividad (30 min). Por favor, inicie sesión nuevamente.';
             return;
         }
-        // Actualizar marca de tiempo de última actividad
         $_SESSION['ultimo_acceso'] = $ahora;
     }
 }
 
 /**
- * Comprueba si hay un usuario autenticado en la sesión actual.
+ * Comprueba si hay un usuario autenticado en la sesión activa.
  */
 function estaAutenticado(): bool
 {
@@ -63,7 +52,7 @@ function estaAutenticado(): bool
 }
 
 /**
- * Devuelve los datos del usuario autenticado o null si es anónimo.
+ * Devuelve los datos del usuario en sesión o null si es anónimo.
  *
  * @return array{id: int, username: string, nombre_completo: string, email: string, rol: string}|null
  */
@@ -74,10 +63,10 @@ function usuarioAutenticado(): ?array
 }
 
 /**
- * Intenta autenticar a un usuario con sus credenciales delegando en el Modelo Usuario.
+ * Valida credenciales contra el modelo Usuario y almacena la sesión.
  *
- * @param string $username Nombre de usuario
- * @param string $password Contraseña en texto plano
+ * @param string $username
+ * @param string $password
  * @return array{exito: bool, error: ?string, usuario: ?array}
  */
 function intentarLogin(string $username, string $password): array
@@ -88,62 +77,41 @@ function intentarLogin(string $username, string $password): array
     $password = trim($password);
 
     if ($username === '' || $password === '') {
-        return [
-            'exito' => false,
-            'error' => 'Debe indicar el usuario y la contraseña.',
-            'usuario' => null
-        ];
+        return ['exito' => false, 'error' => 'Debe indicar el usuario y la contraseña.', 'usuario' => null];
     }
 
     try {
         $usuario = Usuario::buscarPorUsername($username);
 
         if ($usuario && password_verify($password, (string) $usuario['password_hash'])) {
-            // Regenerar ID de sesión inmediatamente para mitigar Session Fixation
             if (!headers_sent()) {
                 session_regenerate_id(true);
             }
 
-            // Almacenar únicamente datos necesarios en la sesión (nunca el hash de la contraseña)
             $_SESSION['usuario'] = [
-                'id' => (int) $usuario['id'],
-                'username' => (string) $usuario['username'],
+                'id'              => (int) $usuario['id'],
+                'username'        => (string) $usuario['username'],
                 'nombre_completo' => (string) $usuario['nombre_completo'],
-                'email' => (string) $usuario['email'],
-                'rol' => (string) $usuario['rol']
+                'email'           => (string) $usuario['email'],
+                'rol'             => (string) $usuario['rol']
             ];
             $_SESSION['ultimo_acceso'] = time();
 
-            return [
-                'exito' => true,
-                'error' => null,
-                'usuario' => $_SESSION['usuario']
-            ];
+            return ['exito' => true, 'error' => null, 'usuario' => $_SESSION['usuario']];
         }
 
-        return [
-            'exito' => false,
-            'error' => 'Credenciales incorrectas. Verifique su usuario y contraseña.',
-            'usuario' => null
-        ];
+        return ['exito' => false, 'error' => 'Credenciales incorrectas. Verifique su usuario y contraseña.', 'usuario' => null];
     } catch (Throwable $e) {
-        // En producción no se exponen detalles técnicos al usuario
-        error_log('Error en login MVC: ' . $e->getMessage());
-        return [
-            'exito' => false,
-            'error' => 'Error de comunicación con el servicio de autenticación.',
-            'usuario' => null
-        ];
+        error_log('Error en autenticación: ' . $e->getMessage());
+        return ['exito' => false, 'error' => 'Error de comunicación con el servicio de autenticación.', 'usuario' => null];
     }
 }
 
 /**
- * Guardián de control de acceso para vistas y controladores protegidos.
- * Si no está autenticado, redirige al formulario de login con mensaje flash.
- * Si se especifica un rol requerido y el usuario no lo posee, restringe el paso.
+ * Guardián de control de acceso. Redirige a login si no hay sesión activa.
  *
- * @param string|null $rolRequerido Rol necesario ('admin' o 'gestor'). Si es null, cualquier rol válido accede.
- * @param string $rutaLogin Ruta relativa al controlador login.php (por defecto 'login.php' o '../login.php')
+ * @param string|null $rolRequerido 'admin' o 'gestor' (null = cualquier rol autenticado)
+ * @param string $rutaLogin Ruta relativa al controlador de login
  */
 function requerirAutenticacion(?string $rolRequerido = null, string $rutaLogin = 'login.php'): void
 {
@@ -167,7 +135,7 @@ function requerirAutenticacion(?string $rolRequerido = null, string $rutaLogin =
 }
 
 /**
- * Cierra la sesión de forma limpia, vaciando $_SESSION y destruyendo la cookie.
+ * Destruye la sesión activa y elimina su cookie asociada.
  */
 function cerrarSesion(): void
 {

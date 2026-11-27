@@ -219,9 +219,9 @@ declare(strict_types=1);
                             </p>
 
                             <div class="fs-xs text-secondary mb-3 d-flex flex-column gap-1">
-                                <span> <strong><?= e(formatearFecha($ev['fecha'], $ev['hora'] ?? null)) ?></strong></span>
-                                <span> <?= e($ev['lugar']) ?></span>
-                                <span> <strong><?= $plazasLibres ?> plazas disponibles</strong> (de <?= $aforoTotal ?>)</span>
+                                <span>📅 <strong><?= e(formatearFecha($ev['fecha'], $ev['hora'] ?? null)) ?></strong></span>
+                                <span>📍 <?= e($ev['lugar']) ?></span>
+                                <span>👥 <strong><?= $plazasLibres ?> plazas disponibles</strong> (de <?= $aforoTotal ?>)</span>
                             </div>
 
                             <a href="evento.php?id=<?= (int) $ev['id'] ?>" class="btn btn-flock-accent w-100 text-center">

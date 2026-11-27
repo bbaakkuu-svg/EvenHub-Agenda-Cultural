@@ -2,10 +2,8 @@
 declare(strict_types=1);
 
 /**
- * Modelo Categoria (models/Categoria.php)
- * FLOCK — Agenda Cultural Municipal
- *
- * Encapsula la persistencia y consultas sobre la tabla 'categorias'.
+ * Modelo Categoria
+ * Gestiona las temáticas y disciplinas artísticas de la tabla 'categorias'.
  */
 
 require_once __DIR__ . '/../includes/conexion.php';
@@ -13,43 +11,37 @@ require_once __DIR__ . '/../includes/conexion.php';
 class Categoria
 {
     /**
-     * Lista todas las categorías junto con el número total de eventos activos programados.
+     * Lista todas las categorías y contabiliza sus eventos activos programados.
      *
      * @return array<int, array<string, mixed>>
      */
     public static function listarConTotalEventos(): array
     {
-        $pdo = obtenerConexion();
         $sql = 'SELECT 
-                    c.id, 
-                    c.nombre, 
-                    c.slug, 
-                    c.color_badge, 
-                    c.descripcion,
+                    c.id, c.nombre, c.slug, c.color_badge, c.descripcion,
                     COUNT(CASE WHEN e.estado = "activo" THEN e.id ELSE NULL END) AS total_eventos
                 FROM categorias c
                 LEFT JOIN eventos e ON e.categoria_id = c.id
                 GROUP BY c.id, c.nombre, c.slug, c.color_badge, c.descripcion
                 ORDER BY c.nombre ASC';
 
-        $stmt = $pdo->query($sql);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return obtenerConexion()->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
-     * Obtiene el listado simple de todas las categorías.
+     * Lista simple de todas las categorías para selectores y filtros.
      *
      * @return array<int, array<string, mixed>>
      */
     public static function todas(): array
     {
-        $pdo = obtenerConexion();
-        $stmt = $pdo->query('SELECT id, nombre, slug, color_badge, descripcion FROM categorias ORDER BY nombre ASC');
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return obtenerConexion()
+            ->query('SELECT id, nombre, slug, color_badge, descripcion FROM categorias ORDER BY nombre ASC')
+            ->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
-     * Busca una categoría por su ID numérico o por su slug alfanumérico.
+     * Busca una categoría por su ID numérico o por su slug textual.
      *
      * @param int|string $identificador
      * @return array<string, mixed>|null
