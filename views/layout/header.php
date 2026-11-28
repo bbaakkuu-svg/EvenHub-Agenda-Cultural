@@ -14,6 +14,9 @@ $basePath = $basePath ?? '';
     
     <!-- Bootstrap 5 CSS (Uso exclusivo: rejilla responsive y navbar colapsable) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     
     <!-- Hoja de Estilos Propia (Identidad visual corporativa municipal) -->
     <link rel="stylesheet" href="<?= $basePath ?>css/styles.css">

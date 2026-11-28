@@ -15,7 +15,7 @@ require_once __DIR__ . '/../views/layout/header.php';
 
 <div class="container">
     <!-- Hero Banner Institucional -->
-    <section class="hero-banner p-4 p-md-5 mb-4 rounded-4 text-white bg-flock-primary shadow-sm">
+    <section class="hero-banner p-4 p-md-5 mb-4 rounded-3 text-white bg-flock-primary border">
         <div class="row align-items-center">
             <div class="col-lg-8">
                 <span class="badge bg-danger text-uppercase px-3 py-2 mb-2">Programación Oficial 2026</span>
@@ -28,7 +28,7 @@ require_once __DIR__ . '/../views/layout/header.php';
             </div>
             <div class="col-lg-4 text-center mt-4 mt-lg-0">
                 <div class="p-3 bg-white bg-opacity-10 rounded-3 border border-light border-opacity-25">
-                    <h2 class="h5 fw-bold mb-1">🏛️ Espacios Abiertos</h2>
+                    <h2 class="h5 fw-bold mb-1"><i class="bi bi-building me-1" aria-hidden="true"></i> Espacios Abiertos</h2>
                     <p class="fs-sm text-white-50 mb-0">5 recintos municipales con aforos controlados y reservas gratuitas o a precios populares.</p>
                 </div>
             </div>
@@ -170,9 +170,9 @@ require_once __DIR__ . '/../views/layout/header.php';
                         <h3 class="h5 fw-bold mb-2">Festival Urbano de Otoño</h3>
                         <p class="text-muted fs-sm mb-3 flex-grow-1">Música en directo, creadores emergentes locales y actividades comunitarias al aire libre.</p>
                         <div class="fs-xs text-secondary mb-3 d-flex flex-column gap-1">
-                            <span>📅 <strong>20 de Noviembre 2026</strong> — 18:00h</span>
-                            <span>📍 Plaza de las Artes</span>
-                            <span>👥 <strong>320 plazas disponibles</strong> (de 400)</span>
+                            <span><i class="bi bi-calendar3 me-1" aria-hidden="true"></i> <strong>20 de Noviembre 2026</strong> — 18:00h</span>
+                            <span><i class="bi bi-geo-alt me-1" aria-hidden="true"></i> Plaza de las Artes</span>
+                            <span><i class="bi bi-people me-1" aria-hidden="true"></i> <strong>320 plazas disponibles</strong> (de 400)</span>
                         </div>
                         <a href="evento.php?id=1" class="btn btn-flock-accent w-100 text-center">Detalles e Inscripción</a>
                     </div>
@@ -195,9 +195,9 @@ require_once __DIR__ . '/../views/layout/header.php';
                         <h3 class="h5 fw-bold mb-2">Ciclo Cine Social: "Voces Vecinales"</h3>
                         <p class="text-muted fs-sm mb-3 flex-grow-1">Proyección del documental y mesa redonda posterior con asociaciones locales.</p>
                         <div class="fs-xs text-secondary mb-3 d-flex flex-column gap-1">
-                            <span>📅 <strong>21 de Noviembre 2026</strong> — 19:30h</span>
-                            <span>📍 Cinefórum Central</span>
-                            <span>👥 <strong>65 plazas disponibles</strong> (de 80)</span>
+                            <span><i class="bi bi-calendar3 me-1" aria-hidden="true"></i> <strong>21 de Noviembre 2026</strong> — 19:30h</span>
+                            <span><i class="bi bi-geo-alt me-1" aria-hidden="true"></i> Cinefórum Central</span>
+                            <span><i class="bi bi-people me-1" aria-hidden="true"></i> <strong>65 plazas disponibles</strong> (de 80)</span>
                         </div>
                         <a href="evento.php?id=2" class="btn btn-flock-accent w-100 text-center">Detalles e Inscripción</a>
                     </div>
@@ -220,9 +220,9 @@ require_once __DIR__ . '/../views/layout/header.php';
                         <h3 class="h5 fw-bold mb-2">Noche de Música Acústica Emergente</h3>
                         <p class="text-muted fs-sm mb-3 flex-grow-1">Concierto íntimo con tres cantautores y bandas locales en formato desenchufado.</p>
                         <div class="fs-xs text-secondary mb-3 d-flex flex-column gap-1">
-                            <span>📅 <strong>22 de Noviembre 2026</strong> — 20:00h</span>
-                            <span>📍 Espacio Joven "La Nave"</span>
-                            <span>👥 <strong>85 plazas disponibles</strong> (de 100)</span>
+                            <span><i class="bi bi-calendar3 me-1" aria-hidden="true"></i> <strong>22 de Noviembre 2026</strong> — 20:00h</span>
+                            <span><i class="bi bi-geo-alt me-1" aria-hidden="true"></i> Espacio Joven "La Nave"</span>
+                            <span><i class="bi bi-people me-1" aria-hidden="true"></i> <strong>85 plazas disponibles</strong> (de 100)</span>
                         </div>
                         <a href="evento.php?id=3" class="btn btn-flock-accent w-100 text-center">Detalles e Inscripción</a>
                     </div>

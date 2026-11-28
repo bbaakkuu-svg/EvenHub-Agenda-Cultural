@@ -36,8 +36,8 @@ declare(strict_types=1);
         </div>
 
     <?php elseif (empty($categorias)): ?>
-        <div class="text-center py-5 bg-white rounded-4 border p-4 shadow-sm my-4">
-            <div class="display-6 mb-3">📂</div>
+        <div class="text-center py-5 bg-white rounded-3 border p-4 my-4">
+            <div class="fs-1 text-secondary mb-3" aria-hidden="true"><i class="bi bi-folder2-open"></i></div>
             <h2 class="h5 fw-bold mb-2">No hay categorías disponibles</h2>
             <p class="text-muted mb-0">En este momento no se han configurado categorías culturales en el sistema.</p>
         </div>
@@ -51,8 +51,8 @@ declare(strict_types=1);
                 $totalEventos = (int) ($cat['total_eventos'] ?? 0);
                 ?>
                 <div class="col-12 col-md-6 col-lg-4">
-                    <div class="card h-100 shadow-sm border-0 rounded-3 overflow-hidden bg-white d-flex flex-column"
-                        style="border-top: 5px solid <?= e($colorBadge) ?> !important;">
+                    <div class="card h-100 border rounded-3 overflow-hidden bg-white d-flex flex-column"
+                        style="border-top: 4px solid <?= e($colorBadge) ?> !important;">
                         <div class="card-body p-4 d-flex flex-column flex-grow-1">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <span class="fs-2" aria-hidden="true"></span>
@@ -73,7 +73,7 @@ declare(strict_types=1);
                                 <a href="eventos.php?categoria=<?= (int) $cat['id'] ?>"
                                    class="btn btn-outline-dark w-100 fw-semibold d-flex justify-content-between align-items-center">
                                     <span>Ver actividades</span>
-                                    <span>→</span>
+                                    <i class="bi bi-arrow-right" aria-hidden="true"></i>
                                 </a>
                             </div>
                         </div>
@@ -83,7 +83,7 @@ declare(strict_types=1);
         </div>
 
         <!-- Banner informativo inferior -->
-        <div class="mt-5 p-4 rounded-4 bg-flock-primary text-white shadow-sm d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <div class="mt-5 p-4 rounded-3 bg-flock-primary text-white border d-flex flex-wrap justify-content-between align-items-center gap-3">
             <div>
                 <h3 class="h5 fw-bold mb-1">¿Buscas algo en específico?</h3>
                 <p class="mb-0 text-white-50 fs-sm">Consulta el listado completo de actividades o utiliza nuestro buscador por palabra clave.</p>

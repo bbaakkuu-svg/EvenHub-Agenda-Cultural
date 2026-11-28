@@ -7,7 +7,7 @@ $usuarioActual = estaAutenticado() ? usuarioAutenticado() : null;
     <nav class="navbar navbar-expand-lg navbar-dark bg-flock-primary shadow-sm" aria-label="Navegación principal">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center gap-2" href="<?= $basePath ?>index.php">
-                <span class="brand-shield" aria-hidden="true">🏛️</span>
+                <i class="bi bi-building fs-4" aria-hidden="true"></i>
                 <span class="brand-text">
                     <span class="fw-bold tracking-tight">FLOCK</span>
                     <small class="d-block text-white-50 fs-xs">Ayuntamiento de Villaverde</small>
@@ -37,7 +37,7 @@ $usuarioActual = estaAutenticado() ? usuarioAutenticado() : null;
                     <?php if ($usuarioActual !== null): ?>
                         <li class="nav-item ms-lg-2 dropdown">
                             <a class="btn btn-warning btn-sm text-dark fw-semibold dropdown-toggle d-flex align-items-center gap-1" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <span aria-hidden="true">👤</span>
+                                <i class="bi bi-person-circle" aria-hidden="true"></i>
                                 <span><?= htmlspecialchars($usuarioActual['username']) ?></span>
                                 <span class="badge bg-dark text-white fs-xs text-uppercase ms-1"><?= htmlspecialchars($usuarioActual['rol']) ?></span>
                             </a>
@@ -49,13 +49,13 @@ $usuarioActual = estaAutenticado() ? usuarioAutenticado() : null;
                                 </li>
                                 <li>
                                     <a class="dropdown-item d-flex align-items-center gap-2 <?= (isset($activeNav) && $activeNav === 'admin') ? 'active' : '' ?>" href="<?= $basePath ?>admin/index.php">
-                                        <span>📊</span> Panel de Gestión
+                                        <i class="bi bi-speedometer2" aria-hidden="true"></i> Panel de Gestión
                                     </a>
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <a class="dropdown-item text-danger d-flex align-items-center gap-2" href="<?= $basePath ?>logout.php">
-                                        <span>🚪</span> Cerrar Sesión
+                                        <i class="bi bi-box-arrow-right" aria-hidden="true"></i> Cerrar Sesión
                                     </a>
                                 </li>
                             </ul>

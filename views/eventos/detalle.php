@@ -28,7 +28,7 @@ $aforoTotal = (int) $evento['aforo_total'];
     <div class="row g-4">
         <!-- Columna Principal (Información y Multimedia) -->
         <div class="col-12 col-lg-8">
-            <article class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+            <article class="card border rounded-3 overflow-hidden bg-white">
                 <!-- Imagen principal del evento -->
                 <div class="position-relative">
                     <img src="<?= e($imgUrl) ?>" 
@@ -80,7 +80,7 @@ $aforoTotal = (int) $evento['aforo_total'];
 
         <!-- Columna Lateral (Panel de Reserva y Estado de Aforo) -->
         <div class="col-12 col-lg-4">
-            <div class="card border-0 shadow-sm rounded-4 p-4 bg-white sticky-top" style="top: 2rem;">
+            <div class="card border rounded-3 p-4 bg-white sticky-top" style="top: 2rem;">
                 <h3 class="h5 fw-bold text-dark mb-3">Inscripción y Aforo</h3>
 
                 <!-- Precio -->

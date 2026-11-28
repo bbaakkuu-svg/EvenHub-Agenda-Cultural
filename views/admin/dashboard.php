@@ -19,9 +19,8 @@ declare(strict_types=1);
     <div class="d-flex flex-wrap justify-content-between align-items-center pb-3 mb-4 border-bottom gap-3">
         <div>
             <div class="d-flex align-items-center gap-2 mb-1">
-                <span class="fs-4" aria-hidden="true">🏛️</span>
                 <h1 class="h3 fw-bold mb-0 text-flock-primary">Panel de Gestión Cultural</h1>
-                <span class="badge bg-secondary-subtle text-secondary border fs-xs text-uppercase">
+                <span class="badge bg-light text-secondary border fs-xs text-uppercase">
                     <?= e($usuario['rol'] ?? 'gestor') ?>
                 </span>
             </div>
@@ -31,10 +30,10 @@ declare(strict_types=1);
         </div>
         <div class="d-flex align-items-center gap-2">
             <a href="../eventos.php" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1">
-                <span>🌐</span> Ver Catálogo Público
+                <i class="bi bi-globe" aria-hidden="true"></i> Ver Catálogo Público
             </a>
             <a href="../logout.php" class="btn btn-outline-danger btn-sm d-flex align-items-center gap-1">
-                <span>🚪</span> Cerrar Sesión
+                <i class="bi bi-box-arrow-right" aria-hidden="true"></i> Cerrar Sesión
             </a>
         </div>
     </div>
@@ -42,7 +41,7 @@ declare(strict_types=1);
     <!-- Mensajes de Feedback Flash -->
     <?php if (!empty($aviso)): ?>
         <div class="alert alert-info alert-dismissible fade show fs-sm d-flex align-items-center gap-2" role="alert">
-            <span aria-hidden="true">ℹ️</span>
+            <i class="bi bi-info-circle" aria-hidden="true"></i>
             <div><?= e($aviso) ?></div>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
         </div>
@@ -50,7 +49,7 @@ declare(strict_types=1);
 
     <?php if (!empty($error)): ?>
         <div class="alert alert-danger alert-dismissible fade show fs-sm d-flex align-items-center gap-2" role="alert">
-            <span aria-hidden="true">⚠️</span>
+            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
             <div><?= e($error) ?></div>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
         </div>
@@ -59,69 +58,61 @@ declare(strict_types=1);
     <!-- Tarjetas de Métricas Resumen -->
     <div class="row g-3 mb-4">
         <div class="col-12 col-sm-6 col-lg-3">
-            <div class="card shadow-sm border-0 rounded-3 h-100 p-3 bg-white border-start border-4 border-primary">
+            <div class="card border rounded-3 h-100 p-3 bg-white">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <span class="text-muted fs-xs text-uppercase fw-semibold d-block">Eventos Activos</span>
-                        <span class="h2 fw-bold mb-0 text-dark"><?= (int) $metricas['eventos_activos'] ?></span>
+                        <span class="text-muted fs-xs text-uppercase fw-semibold d-block mb-1">Eventos Activos</span>
+                        <span class="h3 fw-bold mb-0 text-dark"><?= (int) $metricas['eventos_activos'] ?></span>
                     </div>
-                    <div class="p-3 bg-primary-subtle text-primary rounded-circle fs-4" aria-hidden="true">
-                        🎭
-                    </div>
+                    <i class="bi bi-calendar-event fs-3 text-secondary" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
 
         <div class="col-12 col-sm-6 col-lg-3">
-            <div class="card shadow-sm border-0 rounded-3 h-100 p-3 bg-white border-start border-4 border-success">
+            <div class="card border rounded-3 h-100 p-3 bg-white">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <span class="text-muted fs-xs text-uppercase fw-semibold d-block">Reservas Confirmadas</span>
-                        <span class="h2 fw-bold mb-0 text-dark"><?= (int) $metricas['total_reservas'] ?></span>
+                        <span class="text-muted fs-xs text-uppercase fw-semibold d-block mb-1">Reservas Confirmadas</span>
+                        <span class="h3 fw-bold mb-0 text-dark"><?= (int) $metricas['total_reservas'] ?></span>
                     </div>
-                    <div class="p-3 bg-success-subtle text-success rounded-circle fs-4" aria-hidden="true">
-                        🎟️
-                    </div>
+                    <i class="bi bi-ticket-perforated fs-3 text-secondary" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
 
         <div class="col-12 col-sm-6 col-lg-3">
-            <div class="card shadow-sm border-0 rounded-3 h-100 p-3 bg-white border-start border-4 border-info">
+            <div class="card border rounded-3 h-100 p-3 bg-white">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <span class="text-muted fs-xs text-uppercase fw-semibold d-block">Plazas Ocupadas</span>
-                        <span class="h2 fw-bold mb-0 text-dark"><?= (int) $metricas['plazas_reservadas'] ?></span>
+                        <span class="text-muted fs-xs text-uppercase fw-semibold d-block mb-1">Plazas Ocupadas</span>
+                        <span class="h3 fw-bold mb-0 text-dark"><?= (int) $metricas['plazas_reservadas'] ?></span>
                     </div>
-                    <div class="p-3 bg-info-subtle text-info rounded-circle fs-4" aria-hidden="true">
-                        👥
-                    </div>
+                    <i class="bi bi-people fs-3 text-secondary" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
 
         <div class="col-12 col-sm-6 col-lg-3">
-            <div class="card shadow-sm border-0 rounded-3 h-100 p-3 bg-white border-start border-4 border-warning">
+            <div class="card border rounded-3 h-100 p-3 bg-white">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <span class="text-muted fs-xs text-uppercase fw-semibold d-block">Espacios Culturales</span>
-                        <span class="h2 fw-bold mb-0 text-dark"><?= (int) $metricas['total_espacios'] ?></span>
+                        <span class="text-muted fs-xs text-uppercase fw-semibold d-block mb-1">Espacios Culturales</span>
+                        <span class="h3 fw-bold mb-0 text-dark"><?= (int) $metricas['total_espacios'] ?></span>
                     </div>
-                    <div class="p-3 bg-warning-subtle text-warning rounded-circle fs-4" aria-hidden="true">
-                        📍
-                    </div>
+                    <i class="bi bi-geo-alt fs-3 text-secondary" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Barra de Acciones y Navegación Administrativa -->
-    <div class="card shadow-sm border-0 rounded-3 mb-4">
+    <div class="card border rounded-3 mb-4">
         <div class="card-header bg-white py-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
             <h2 class="h5 fw-bold mb-0 text-dark">Gestión de la Programación Cultural</h2>
             <div class="d-flex gap-2">
-                <a href="../eventos.php" class="btn btn-outline-primary btn-sm">
-                    🔍 Explorar Todo el Catálogo
+                <a href="../eventos.php" class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1">
+                    <i class="bi bi-search" aria-hidden="true"></i> Explorar Catálogo
                 </a>
             </div>
         </div>
@@ -190,7 +181,7 @@ declare(strict_types=1);
                                     </td>
                                     <td class="text-end pe-3">
                                         <a href="../eventos.php?q=<?= urlencode((string) $evento['titulo']) ?>" class="btn btn-sm btn-outline-secondary" title="Ver en catálogo público">
-                                            👁️
+                                            <i class="bi bi-eye" aria-hidden="true"></i>
                                         </a>
                                     </td>
                                 </tr>

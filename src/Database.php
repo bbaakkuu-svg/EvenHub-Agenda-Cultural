@@ -86,8 +86,7 @@ class Database
             </style>
         </head>
         <body class="d-flex align-items-center justify-content-center min-vh-100 p-3">
-            <div class="card shadow-sm border-0 p-4 p-md-5 text-center error-card bg-white">
-                <div class="display-3 mb-3" aria-hidden="true">🏛️</div>
+            <div class="card border p-4 p-md-5 text-center error-card bg-white">
                 <h1 class="h4 fw-bold text-dark mb-2">Servicio temporalmente no disponible</h1>
                 <p class="text-muted mb-4">
                     Estamos realizando labores de mantenimiento o experimentando una incidencia técnica momentánea con el servidor municipal. Por favor, inténtalo de nuevo en unos minutos.

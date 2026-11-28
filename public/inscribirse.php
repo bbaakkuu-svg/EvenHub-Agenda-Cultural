@@ -3,135 +3,162 @@ declare(strict_types=1);
 
 /**
  * FLOCK — Agenda Cultural Municipal
- * Controlador de Inscripción de Asistentes a Eventos (public/inscribirse.php)
- * Issue #11 — feat(backend): attendee registration and seat reservation system
- *
- * Flujo:
- *   GET  ?evento_id=N  → muestra el formulario de reserva con datos del evento
- *   POST              → valida, registra la inscripción y redirige a confirmación
+ * Controlador de Inscripción de Asistentes y Reserva de Plazas (public/inscribirse.php)
+ * Issue #11
  */
 
-require_once __DIR__ . '/../includes/conexion.php';
-require_once __DIR__ . '/../includes/helpers.php';
-require_once __DIR__ . '/../models/Evento.php';
-require_once __DIR__ . '/../models/Inscripcion.php';
-
-// ── Protección CSRF básica ────────────────────────────────────────────────────
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// ── 1. Obtener y validar evento_id ────────────────────────────────────────────
-$eventoId = filter_input(INPUT_GET,  'evento_id', FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]])
-         ?? filter_input(INPUT_POST, 'evento_id', FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+require_once __DIR__ . '/../includes/helpers.php';
+require_once __DIR__ . '/../models/Evento.php';
+require_once __DIR__ . '/../models/Inscripcion.php';
 
-if (!$eventoId) {
-    mostrar404('No se ha especificado un evento válido para la inscripción.');
+// 1. Si llega un localizador por GET, mostrar la pantalla de confirmación de reserva
+$localizadorGet = trim((string) filter_input(INPUT_GET, 'localizador', FILTER_UNSAFE_RAW));
+if ($localizadorGet !== '') {
+    try {
+        $inscripcion = Inscripcion::obtenerPorLocalizador($localizadorGet);
+    } catch (Throwable $ex) {
+        error_log('[FLOCK Confirmación Inscripción] ' . $ex->getMessage());
+        $inscripcion = null;
+    }
+
+    if (!$inscripcion) {
+        mostrar404('No se ha encontrado ninguna reserva con el código de referencia indicado.');
+        exit;
+    }
+
+    $pageTitle = 'Reserva Confirmada — ' . $inscripcion['localizador'];
+    $activeNav = 'eventos';
+
+    require_once __DIR__ . '/../views/layout/header.php';
+    require __DIR__ . '/../views/inscripciones/confirmacion.php';
+    require_once __DIR__ . '/../views/layout/footer.php';
+    exit;
 }
 
-// ── 2. Cargar datos del evento desde la BD ────────────────────────────────────
+// 2. Obtener y validar el identificador del evento
+$rawEventoId = $_SERVER['REQUEST_METHOD'] === 'POST'
+    ? filter_input(INPUT_POST, 'evento_id', FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]])
+    : filter_input(INPUT_GET, 'evento_id', FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+
+if ($rawEventoId === false || $rawEventoId === null) {
+    mostrar404('Identificador de evento no válido para realizar la inscripción.');
+    exit;
+}
+
+$eventoId = (int) $rawEventoId;
+
+// 3. Cargar datos del evento y verificar que esté activo
 try {
-    $evento = Evento::obtenerPorId((int) $eventoId);
+    $evento = Evento::obtenerPorId($eventoId);
 } catch (Throwable $ex) {
-    error_log('[FLOCK Inscripcion] ' . $ex->getMessage());
-    mostrar404('Error al consultar el evento. Inténtalo de nuevo más tarde.');
+    error_log('[FLOCK Inscripción Evento] ' . $ex->getMessage());
+    $evento = null;
 }
 
-if (!$evento) {
-    mostrar404('El evento solicitado no existe o ha sido cancelado.');
+if (!$evento || $evento['estado'] !== 'activo') {
+    mostrar404('El evento solicitado no existe o no admite inscripciones.');
+    exit;
 }
 
-// ── 3. Verificar que el evento admite inscripciones ───────────────────────────
 $aforoTotal        = (int) $evento['aforo_total'];
-$plazasOcupadas    = (int) ($evento['plazas_ocupadas'] ?? 0);
-$plazasDisponibles = max(0, $aforoTotal - $plazasOcupadas);
+$plazasReservadas  = (int) $evento['plazas_ocupadas'];
+$plazasDisponibles = max(0, $aforoTotal - $plazasReservadas);
+$estaAgotado       = ($plazasDisponibles === 0);
 
-if ($evento['estado'] !== 'activo') {
-    mostrar404('Este evento no está disponible para inscripciones en este momento.');
+// Token CSRF para proteger el formulario de inscripción
+if (empty($_SESSION['csrf_inscripcion'])) {
+    $_SESSION['csrf_inscripcion'] = bin2hex(random_bytes(32));
 }
+$csrfToken = $_SESSION['csrf_inscripcion'];
 
-// ── 4. Gestión del formulario POST ────────────────────────────────────────────
-$error  = null;
-$campos = [
+$errores = [];
+$formData = [
     'nombre'        => '',
     'email'         => '',
     'telefono'      => '',
     'plazas'        => 1,
-    'observaciones' => '',
+    'observaciones' => ''
 ];
 
+// 4. Procesar envío POST del formulario
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    // 4a. Leer y sanear campos
-    $campos['nombre']        = trim(filter_input(INPUT_POST, 'nombre',        FILTER_DEFAULT) ?? '');
-    $campos['email']         = strtolower(trim(filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL) ?? ''));
-    $campos['telefono']      = trim(filter_input(INPUT_POST, 'telefono',      FILTER_DEFAULT) ?? '');
-    $campos['plazas']        = max(1, min(5, (int) filter_input(INPUT_POST, 'plazas', FILTER_VALIDATE_INT)));
-    $campos['observaciones'] = trim(filter_input(INPUT_POST, 'observaciones', FILTER_DEFAULT) ?? '');
-
-    // 4b. Validación en servidor
-    if (mb_strlen($campos['nombre']) < 3 || mb_strlen($campos['nombre']) > 100) {
-        $error = 'El nombre debe tener entre 3 y 100 caracteres.';
-    } elseif (!filter_var($campos['email'], FILTER_VALIDATE_EMAIL)) {
-        $error = 'El correo electrónico no tiene un formato válido.';
-    } elseif (!preg_match('/^\+?[\d\s\-]{7,20}$/', $campos['telefono'])) {
-        $error = 'El teléfono no tiene un formato válido (solo dígitos, espacios o guiones).';
-    } elseif ($campos['plazas'] < 1 || $campos['plazas'] > 5) {
-        $error = 'Solo se pueden reservar entre 1 y 5 plazas por inscripción.';
-    } elseif ($campos['plazas'] > $plazasDisponibles) {
-        $error = "No hay suficientes plazas disponibles. Quedan {$plazasDisponibles} plazas libres.";
+    $tokenRecibido = (string) ($_POST['csrf_token'] ?? '');
+    if (!hash_equals($csrfToken, $tokenRecibido)) {
+        $errores[] = 'La sesión del formulario ha caducado. Por favor, inténtalo de nuevo.';
     }
 
-    // 4c. Si pasa validación → registrar en transacción
-    if ($error === null) {
+    $formData['nombre']        = trim((string) ($_POST['nombre'] ?? ''));
+    $formData['email']         = trim((string) ($_POST['email'] ?? ''));
+    $formData['telefono']      = trim((string) ($_POST['telefono'] ?? ''));
+    $formData['plazas']        = (int) ($_POST['plazas'] ?? 1);
+    $formData['observaciones'] = trim((string) ($_POST['observaciones'] ?? ''));
+
+    if ($estaAgotado) {
+        $errores[] = 'El evento tiene el aforo completo y no admite nuevas inscripciones.';
+    }
+
+    if (mb_strlen($formData['nombre']) < 2 || mb_strlen($formData['nombre']) > 100) {
+        $errores[] = 'Introduce un nombre completo válido (entre 2 y 100 caracteres).';
+    }
+
+    if ($formData['email'] === '' || mb_strlen($formData['email']) > 120 || !filter_var($formData['email'], FILTER_VALIDATE_EMAIL)) {
+        $errores[] = 'Introduce una dirección de correo electrónico válida.';
+    }
+
+    if (!preg_match('/^[0-9+\s()-]{6,20}$/', $formData['telefono'])) {
+        $errores[] = 'Introduce un teléfono de contacto válido (entre 6 y 20 caracteres numéricos).';
+    }
+
+    if ($formData['plazas'] < 1 || $formData['plazas'] > 5) {
+        $errores[] = 'Puedes reservar entre 1 y 5 plazas por inscripción.';
+    } elseif ($formData['plazas'] > $plazasDisponibles) {
+        $errores[] = "Solo quedan {$plazasDisponibles} plazas disponibles para este evento.";
+    }
+
+    if (mb_strlen($formData['observaciones']) > 500) {
+        $errores[] = 'Las observaciones no pueden superar los 500 caracteres.';
+    }
+
+    if (empty($errores)) {
         try {
-            $pdo = obtenerConexion();
-            $pdo->beginTransaction();
-
-            // Re-verificar aforo dentro de la transacción para evitar race condition
-            $stmtAforo = $pdo->prepare(
-                "SELECT COALESCE(SUM(plazas_reservadas), 0)
-                 FROM inscripciones
-                 WHERE evento_id = :id AND estado = 'confirmada'
-                 FOR UPDATE"
+            $localizador = Inscripcion::reservarConValidacion(
+                $eventoId,
+                $formData['nombre'],
+                $formData['email'],
+                $formData['telefono'],
+                $formData['plazas'],
+                $formData['observaciones']
             );
-            $stmtAforo->execute([':id' => $eventoId]);
-            $ocupadasActuales = (int) $stmtAforo->fetchColumn();
-            $disponiblesActuales = max(0, $aforoTotal - $ocupadasActuales);
 
-            if ($campos['plazas'] > $disponiblesActuales) {
-                $pdo->rollBack();
-                $error = "Las plazas solicitadas ya no están disponibles. Quedan {$disponiblesActuales} plazas.";
-            } else {
-                $localizador = Inscripcion::registrar(
-                    $eventoId,
-                    $campos['nombre'],
-                    $campos['email'],
-                    $campos['telefono'],
-                    $campos['plazas'],
-                    $campos['observaciones'] !== '' ? $campos['observaciones'] : null
-                );
-                $pdo->commit();
-
-                // Redirigir a pantalla de confirmación
-                header('Location: confirmacion.php?loc=' . urlencode($localizador));
-                exit;
+            // Regenerar token CSRF tras inserción exitosa y aplicar patrón PRG
+            $_SESSION['csrf_inscripcion'] = bin2hex(random_bytes(32));
+            header('Location: inscribirse.php?localizador=' . urlencode($localizador));
+            exit;
+        } catch (DomainException $de) {
+            $errores[] = $de->getMessage();
+            // Refrescar aforo tras rechazo de negocio
+            $eventoActualizado = Evento::obtenerPorId($eventoId);
+            if ($eventoActualizado) {
+                $evento = $eventoActualizado;
+                $aforoTotal        = (int) $evento['aforo_total'];
+                $plazasReservadas  = (int) $evento['plazas_ocupadas'];
+                $plazasDisponibles = max(0, $aforoTotal - $plazasReservadas);
+                $estaAgotado       = ($plazasDisponibles === 0);
             }
         } catch (Throwable $ex) {
-            if (isset($pdo) && $pdo->inTransaction()) {
-                $pdo->rollBack();
-            }
-            error_log('[FLOCK Inscripcion POST] ' . $ex->getMessage());
-            $error = 'Se produjo un error al procesar tu inscripción. Por favor, inténtalo de nuevo.';
+            error_log('[FLOCK Registro Inscripción] ' . $ex->getMessage());
+            $errores[] = 'No se pudo completar la inscripción por un error interno. Inténtalo de nuevo más tarde.';
         }
     }
 }
 
-// ── 5. Preparar datos para la vista ──────────────────────────────────────────
-$pageTitle = 'Reservar plaza — ' . ($evento['titulo'] ?? 'Evento');
+$pageTitle = 'Inscribirse — ' . $evento['titulo'];
 $activeNav = 'eventos';
-$colorBadge = !empty($evento['color_badge']) ? $evento['color_badge'] : '#1d3557';
 
 require_once __DIR__ . '/../views/layout/header.php';
-require_once __DIR__ . '/../views/inscripcion/formulario.php';
+require __DIR__ . '/../views/inscripciones/formulario.php';
 require_once __DIR__ . '/../views/layout/footer.php';

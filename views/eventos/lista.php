@@ -95,8 +95,8 @@ declare(strict_types=1);
                 <a href="categorias.php" class="btn btn-sm btn-outline-secondary">
                     Ver ficha descriptiva
                 </a>
-                <a href="eventos.php<?= ($q !== '') ? '?q=' . urlencode($q) : '' ?>" class="btn btn-sm btn-outline-danger">
-                    ✕ Ver todas las categorías
+                <a href="eventos.php<?= ($q !== '') ? '?q=' . urlencode($q) : '' ?>" class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1">
+                    <i class="bi bi-x-lg" aria-hidden="true"></i> Ver todas las categorías
                 </a>
             </div>
         </div>
@@ -115,7 +115,7 @@ declare(strict_types=1);
     <?php endif; ?>
 
     <!-- Formulario de Búsqueda GET Tradicional por palabra clave -->
-    <div class="card p-3 mb-4 shadow-sm border-0 bg-white rounded-3">
+    <div class="card p-3 mb-4 border bg-white rounded-3">
         <form method="get" action="eventos.php" class="row g-2 align-items-center">
             <?php if ($categoriaSel !== null): ?>
                 <input type="hidden" name="categoria" value="<?= e((string) $categoriaSel) ?>">
@@ -150,7 +150,7 @@ declare(strict_types=1);
 
     <?php elseif (empty($eventos)): ?>
         <!-- Estado vacío: Sin resultados -->
-        <div class="text-center py-5 bg-white rounded-4 border p-4 shadow-sm my-4">
+        <div class="text-center py-5 bg-white rounded-3 border p-4 my-4">
             <h2 class="h5 fw-bold mb-2">
                 <?= $hayFiltros
                     ? 'No hemos encontrado eventos con esos criterios de búsqueda.'
@@ -219,9 +219,9 @@ declare(strict_types=1);
                             </p>
 
                             <div class="fs-xs text-secondary mb-3 d-flex flex-column gap-1">
-                                <span>📅 <strong><?= e(formatearFecha($ev['fecha'], $ev['hora'] ?? null)) ?></strong></span>
-                                <span>📍 <?= e($ev['lugar']) ?></span>
-                                <span>👥 <strong><?= $plazasLibres ?> plazas disponibles</strong> (de <?= $aforoTotal ?>)</span>
+                                <span><i class="bi bi-calendar3 me-1" aria-hidden="true"></i> <strong><?= e(formatearFecha($ev['fecha'], $ev['hora'] ?? null)) ?></strong></span>
+                                <span><i class="bi bi-geo-alt me-1" aria-hidden="true"></i> <?= e($ev['lugar']) ?></span>
+                                <span><i class="bi bi-people me-1" aria-hidden="true"></i> <strong><?= $plazasLibres ?> plazas disponibles</strong> (de <?= $aforoTotal ?>)</span>
                             </div>
 
                             <a href="evento.php?id=<?= (int) $ev['id'] ?>" class="btn btn-flock-accent w-100 text-center">
